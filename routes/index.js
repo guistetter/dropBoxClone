@@ -7,6 +7,28 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/file',(req, res) => { //rota para abrir aruivos
+  let path = './' + req.query.path;
+  if (fs.existsSync(path)){
+
+      fs.readFile(path, (err, data) => {
+        if(err){
+          console.log(err);
+          res.status(400).json({
+            error:err
+          });
+        } else 
+          res.status(200).end(data);
+        
+      })
+
+  } else {
+    res.statyus(404).json({
+      error:'File not Found.'
+    })
+  }
+})
+
 router.delete('/file', (req, res)=>{
 
   let form = new formidable.IncomingForm({ //chamar formulario e fazer configs
@@ -27,6 +49,11 @@ router.delete('/file', (req, res)=>{
           });
         }
       });
+    } else {
+
+      res.statyus(404).json({
+        error:'File not Found.'
+      })
     }
     
   });
